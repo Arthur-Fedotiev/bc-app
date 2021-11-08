@@ -6,14 +6,12 @@ import { ChangeDetectorRef, Component, OnInit, ɵmarkDirty as markDirty } from '
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'bc-app';
+  public title!: string;;
 
   constructor(private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.title = 'Hello Zoneless App';
-      markDirty(this);
-    }, 1500);
+    this.title = 'Hello Zoneless App';
+    markDirty(this);
   }
 }
