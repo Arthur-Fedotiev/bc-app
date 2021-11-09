@@ -1,4 +1,5 @@
 import { Component, OnInit, ɵdetectChanges as detectChanges } from '@angular/core';
+import { MarketDataFacadeService } from '../shared/services/facades/market-data-facade.service';
 
 interface City {
   name: string,
@@ -15,7 +16,7 @@ export class MarketDataComponent implements OnInit {
 
   public selectedCity!: City;
 
-  constructor() {
+  constructor(private marketDataFacade: MarketDataFacadeService) {
 
   }
   ngOnInit(): void {
