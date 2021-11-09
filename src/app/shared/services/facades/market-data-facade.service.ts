@@ -6,10 +6,9 @@ import { Facade } from '../../interfaces/common';
 @Injectable({
   providedIn: 'root'
 })
-export class MarketDataFacadeService implements Facade<MarketDataState>{
-  private readonly _store: BehaviorSubject<MarketDataState> = new BehaviorSubject<MarketDataState>({} as MarketDataState);
-  private readonly _state: Observable<MarketDataState> = this._store.asObservable();
+export class MarketDataFacadeService {
+  protected readonly _store: BehaviorSubject<MarketDataState> = new BehaviorSubject<MarketDataState>({} as MarketDataState);
+  protected readonly _state: Observable<MarketDataState> = this._store.asObservable();
 
-  constructor() {
-  }
+  constructor() {}
 }
