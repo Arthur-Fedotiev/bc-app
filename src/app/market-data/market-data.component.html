@@ -1,1 +1,11 @@
 <p>market-data works!</p>
+
+<h5>Single</h5>
+<p-dropdown [options]="cities"
+            [(ngModel)]="selectedCity"
+            [placeholder]="'Select a City'"
+            [optionDisabled]="selectedCity?.name ?? 'none'"
+            optionLabel="name"
+            [virtualScroll]="true"
+            [itemSize]="31"
+            (onShow)="detect()"></p-dropdown>
