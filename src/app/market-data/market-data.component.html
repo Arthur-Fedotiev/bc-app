@@ -11,6 +11,11 @@
                [optionValue]="'name'"
                [virtualScroll]="true"
                [itemSize]="31"
+               (onChange)="selectAsset($event)"
                (onFilter)="detect()"
                (onShow)="detect()"></p-dropdown>
 </ng-container>
+
+<div>Price: {{ (realTimeTrade$ | push )?.price ?? '-' }}</div>
+
+<div>Data: {{ ((realTimeTrade$ | push )?.time | date:'short':'UTC') ?? '-' }}</div>

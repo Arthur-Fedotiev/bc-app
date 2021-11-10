@@ -1,8 +1,10 @@
-import { EMPTY, Observable, Subject, catchError, delayWhen, retryWhen, switchAll, tap, timer, ReadableStreamLike } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, delayWhen, retryWhen, switchAll, tap, timer, ReadableStreamLike, ReplaySubject } from 'rxjs';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { ENV_TOKEN, EnvironmentConfig } from 'src/environments/ENV_TOKEN';
+import { URL_TOKEN, UrlConfig } from 'src/app/providers/URL_TOKEN.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -10,21 +12,24 @@ import { environment } from 'src/environments/environment';
 export class RealTimePriceService {
 
   private socket$: WebSocketSubject<unknown> | null = null;
-  private messagesSubject$: Subject<any> = new Subject<any>();
+  private messagesSubject$: ReplaySubject<any> = new ReplaySubject<any>(1);
   public messages$: Observable<unknown> = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
 
-  constructor() {
+  constructor(
+    @Inject(ENV_TOKEN) private readonly env: EnvironmentConfig,
+    @Inject(URL_TOKEN) private readonly urls: UrlConfig,
+  ) {
   }
 
   /**
    * Creates a new WebSocket subject and send it to the messages subject
    * @param cfg if true the observable will be retried.
    */
-  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
-
+  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {   
     if (!this.socket$ || this.socket$.closed) {
       this.socket$ = this.getNewWebSocket();
-
+      console.log(this.socket$);
+      
       const messages = this.socket$.pipe(
         cfg.reconnect ? this.reconnect : o => o,
         tap({ error: error => console.log(error) }),
@@ -57,7 +62,7 @@ export class RealTimePriceService {
    */
   private getNewWebSocket(): WebSocketSubject<unknown> {
     return webSocket({
-      url: environment.apiKey,
+      url: environment.baseSocketUrl,
       openObserver: {
         next: () => {
           console.log('[DataService]: connection ok');
