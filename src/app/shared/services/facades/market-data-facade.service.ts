@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, EMPTY, filter, first, map, Observable, of, pluck, tap } from 'rxjs';
-import { Facade } from '../../interfaces/common';
+import { AssetDTO } from '../../interfaces/assets.interfaces';
 import { AssetsService } from '../API/assets.service';
 
 export class MarketDataState {
   public readonly selectedAsset: string = 'FX';
-  public readonly assetList: Record<string, string>[] = [];
+  public readonly assetList: ReadonlyArray<AssetDTO> = [];
 }
 
 @Injectable({
@@ -17,13 +17,13 @@ export class MarketDataFacadeService {
   private readonly _state$: Observable<MarketDataState> = this._store.asObservable();
 
   public readonly selectedAsset$: Observable<string> = this._state$.pipe(map((state: MarketDataState) => state.selectedAsset), filter<string>(Boolean));
-  public readonly assetList$: Observable<Record<string, string>[]> = this._state$.pipe(map((state: MarketDataState) => state.assetList), filter< Record<string, string>[]>(Boolean));
+  public readonly assetList$: Observable<ReadonlyArray<AssetDTO>> = this._state$.pipe(map((state: MarketDataState) => state.assetList), filter<ReadonlyArray<AssetDTO>>(Boolean));
 
   constructor(private assetsService: AssetsService) {}
 
   public getAssets(): void {
     this.assetsService.getAvailableAssets().pipe(
-      tap((assetList: Record<string, string>[]) => this._store.next((this.state = {
+      tap((assetList: ReadonlyArray<AssetDTO>) => this._store.next((this.state = {
         ...this.state,
         assetList,
       }))),

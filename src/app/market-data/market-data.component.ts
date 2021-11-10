@@ -1,5 +1,6 @@
 import { Component, OnInit, ɵdetectChanges as detectChanges } from '@angular/core';
 import { filter, Observable, startWith, tap } from 'rxjs';
+import { AssetDTO } from '../shared/interfaces/assets.interfaces';
 import { MarketDataFacadeService } from '../shared/services/facades/market-data-facade.service';
 
 interface City {
@@ -13,8 +14,7 @@ interface City {
 })
 export class MarketDataComponent implements OnInit {
 
-  public readonly assets$: Observable<any[]> = this.marketDataFacade.assetList$;
-
+  public readonly assets$ = this.marketDataFacade.assetList$ as Observable<AssetDTO[]>;
   public readonly selectedAsset$: Observable<string> = this.marketDataFacade.selectedAsset$;
 
   constructor(private marketDataFacade: MarketDataFacadeService) {

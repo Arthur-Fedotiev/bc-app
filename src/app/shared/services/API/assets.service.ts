@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UrlConfig, URL_TOKEN } from 'src/app/providers/URL_TOKEN.provider';
 import { EnvironmentConfig, ENV_TOKEN } from 'src/environments/ENV_TOKEN';
+import { AssetDTO } from '../../interfaces/assets.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,9 @@ export class AssetsService {
     @Inject(URL_TOKEN) private readonly urls: UrlConfig,
     private httpClient: HttpClient) { }
 
-  public getAvailableAssets(): Observable<Record<string, string>[]> {
+  public getAvailableAssets(): Observable<ReadonlyArray<AssetDTO>> {
     const headers = new HttpHeaders().set('X-CoinAPI-Key', this.env.apiKey);
 
-    return this.httpClient.get<Record<string, string>[]>(this.urls.assetsUrl, { headers });
+    return this.httpClient.get<ReadonlyArray<AssetDTO>>(this.urls.assetsUrl, { headers });
   }
 }
