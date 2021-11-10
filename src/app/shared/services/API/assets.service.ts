@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { UrlConfig, URL_TOKEN } from 'src/app/providers/URL_TOKEN.provider';
+import { EnvironmentConfig, ENV_TOKEN } from 'src/environments/ENV_TOKEN';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +10,13 @@ import { UrlConfig, URL_TOKEN } from 'src/app/providers/URL_TOKEN.provider';
 export class AssetsService {
 
   constructor(
+    @Inject(ENV_TOKEN) private readonly env: EnvironmentConfig,
     @Inject(URL_TOKEN) private readonly urls: UrlConfig,
-    private httpClient: HttpClient) { 
-      console.log(this.urls);
-      
-    }
+    private httpClient: HttpClient) { }
+
+  public getAvailableAssets(): Observable<Record<string, string>[]> {
+    const headers = new HttpHeaders().set('X-CoinAPI-Key', this.env.apiKey);
+
+    return this.httpClient.get<Record<string, string>[]>(this.urls.assetsUrl, { headers });
+  }
 }
