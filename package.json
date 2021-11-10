@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "~13.0.0",
     "@angular/router": "~13.0.0",
     "@ngneat/until-destroy": "^8.1.4",
+    "@rx-angular/cdk": "latest",
+    "@rx-angular/template": "^1.0.0-beta.28",
     "primeicons": "^5.0.0",
     "primeng": "^12.2.2",
     "rxjs": "~7.4.0",
