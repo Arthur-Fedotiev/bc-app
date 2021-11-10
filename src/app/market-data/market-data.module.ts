@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {DropdownModule} from 'primeng/dropdown';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { LetModule, PushModule } from '@rx-angular/template';
 @NgModule({
   declarations: [
     MarketDataComponent
@@ -16,6 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     DropdownModule,
     FormsModule,
+    LetModule,
+    PushModule,
   ],
   exports: [
     MarketDataComponent,

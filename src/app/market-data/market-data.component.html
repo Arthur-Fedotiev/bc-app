@@ -1,11 +1,16 @@
 <p>market-data works!</p>
 
 <h5>Single</h5>
-<p-dropdown [options]="cities"
-            [(ngModel)]="selectedCity"
-            [placeholder]="'Select a City'"
-            [optionDisabled]="selectedCity?.name ?? 'none'"
-            optionLabel="name"
-            [virtualScroll]="true"
-            [itemSize]="31"
-            (onShow)="detect()"></p-dropdown>
+<ng-container *rxLet="assets$ as assets">
+   <p-dropdown [options]="assets"
+               [ngModel]="selectedAsset$ | push"
+               [placeholder]="'Select a City'"
+               [filter]="true" filterBy="name"
+               optionLabel="name"
+               [name]="'asset_id'"
+               [optionValue]="'name'"
+               [virtualScroll]="true"
+               [itemSize]="31"
+               (onFilter)="detect()"
+               (onShow)="detect()"></p-dropdown>
+</ng-container>
