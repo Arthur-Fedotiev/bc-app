@@ -7,7 +7,7 @@ export const urlTokenFactory = () => {
           const { baseRestUrl, baseSocketUrl} = inject(ENV_TOKEN);
 
           return {
-                    getAssetsUrl: `${baseRestUrl}/v1/assets`,
+                    assetsUrl: `${baseRestUrl}/v1/assets`,
                     realTimeMarketUrl: `${baseSocketUrl}/v1/assets`,
           } as const
 }
