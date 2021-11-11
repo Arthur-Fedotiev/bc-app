@@ -5,11 +5,13 @@ import { Inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ENV_TOKEN, EnvironmentConfig } from 'src/environments/ENV_TOKEN';
 import { URL_TOKEN, UrlConfig } from 'src/app/providers/URL_TOKEN.provider';
+import { getMarketDataMessage, MarketDataMessage } from '../../utils/constants/market-data.consts';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RealTimePriceService {
+  private currentMessage!: MarketDataMessage;
 
   private socket$: WebSocketSubject<unknown> | null = null;
   private messagesSubject$: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -25,11 +27,11 @@ export class RealTimePriceService {
    * Creates a new WebSocket subject and send it to the messages subject
    * @param cfg if true the observable will be retried.
    */
-  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {   
+  public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
     if (!this.socket$ || this.socket$.closed) {
       this.socket$ = this.getNewWebSocket();
       console.log(this.socket$);
-      
+
       const messages = this.socket$.pipe(
         cfg.reconnect ? this.reconnect : o => o,
         tap({ error: error => console.log(error) }),
@@ -44,17 +46,24 @@ export class RealTimePriceService {
    * @param observable the observable to be retried
    */
   private reconnect(observable: Observable<any>): Observable<any> {
-    return observable.pipe(retryWhen(errors => errors.pipe(tap(val => console.log('[Data Service] Try to reconnect', val)),
-      delayWhen(_ => timer(2000)))));
+    return observable.pipe(
+      retryWhen(errors => errors.pipe(
+        tap(val => console.log('[Data Service] Try to reconnect', val)),
+        delayWhen(_ => timer(2000))
+      )));
   }
 
   close() {
+    console.log('[close] CALLED');
+
     this.socket$?.complete();
     this.socket$ = null;
   }
 
-  sendMessage(msg: any) {
-    this.socket$?.next(msg);
+  public sendMarketDataMessage(dataType: string | string[], asetId: string | string[]): void {
+    this.currentMessage = getMarketDataMessage(dataType, asetId, this.env.apiKey);
+
+    this.socket$?.next(this.currentMessage);
   }
 
   /**
@@ -75,7 +84,6 @@ export class RealTimePriceService {
           this.connect({ reconnect: true });
         }
       },
-
     });
   }
 }

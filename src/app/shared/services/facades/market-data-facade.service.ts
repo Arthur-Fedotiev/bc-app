@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { auditTime, BehaviorSubject, catchError, distinctUntilChanged, EMPTY, filter, first, map, Observable, of, pluck, startWith, tap } from 'rxjs';
 import { AssetDTO } from '../../interfaces/assets.interfaces';
 import { RealTimeMarketTradeByAssetDTO } from '../../interfaces/real-time-market.interfaces';
+import { getMarketDataMessage } from '../../utils/constants/market-data.consts';
 import { AssetsService } from '../API/assets.service';
 import { RealTimePriceService } from '../API/real-time-price.service';
 
@@ -41,9 +42,10 @@ export class MarketDataFacadeService {
     })))
   )
 
-  private readonly updateRealTimeDataSource$ = this.selectedAsset$.pipe(
+  private readonly updateRealTimeMarketDataSource$ = this.selectedAsset$.pipe(
     filter(Boolean),
     distinctUntilChanged(),
+    map((assetId: string | string[]) => ({ assetId, dataType: 'trade'})),
     tap(console.log),
     tap(this.changeRealTimeDataSource.bind(this))
   )
@@ -72,7 +74,7 @@ export class MarketDataFacadeService {
 
   public connectToRealMarketData(): void {
     this.realTimeMarketService.connect();
-    this.updateRealTimeDataSource$.subscribe();
+    this.updateRealTimeMarketDataSource$.subscribe();
     this.updateRealTimePrice$.subscribe();
   }
 
@@ -80,10 +82,7 @@ export class MarketDataFacadeService {
     this.realTimeMarketService.close();
   }
 
-  private changeRealTimeDataSource(assetId: string): void {
-    this.realTimeMarketService.sendMessage({
-      ...connectMessage,
-      subscribe_filter_asset_id: [assetId]
-    })
+  private changeRealTimeDataSource({ dataType, assetId } : {dataType: string | string[], assetId: string | string[]}): void {
+    this.realTimeMarketService.sendMarketDataMessage(dataType, assetId)
   }
 }

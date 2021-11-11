@@ -18,9 +18,7 @@ export class MarketDataComponent implements OnInit, OnDestroy {
     map(({ price, time_exchange: time} : RealTimeMarketTradeByAssetDTO) => ({ time, price }))
   )
   
-  constructor(private marketDataFacade: MarketDataFacadeService) {
-
-  }
+  constructor(private marketDataFacade: MarketDataFacadeService) { }
 
   public ngOnDestroy(): void {
     this.marketDataFacade.releaseResources();
@@ -34,10 +32,4 @@ export class MarketDataComponent implements OnInit, OnDestroy {
   public selectAsset({ value }: { originalEvent: PointerEvent, value: string}): void {
     this.marketDataFacade.selectAsset(value);
   }
-
-  detect(){
-    detectChanges(this)
-    
-  }
-
 }
